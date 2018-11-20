@@ -16,7 +16,14 @@ var Analyzer = &analysis.Analyzer{
 	Requires: []*analysis.Analyzer{inspect.Analyzer},
 }
 
-const Doc = `check for possible assigning package variables`
+// flags
+var comment = "assign"
+
+func init() {
+	Analyzer.Flags.StringVar(&comment, "comment", comment, "comment for explicit assignment")
+}
+
+const Doc = `check for possible assignment package variables`
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
@@ -61,7 +68,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 func hasComment(pass *analysis.Pass, cms []ast.CommentMap, n ast.Node) bool {
 	for _, cm := range cms {
 		for _, cg := range cm[n] {
-			if strings.HasPrefix(strings.TrimSpace(cg.Text()), "not-readonly") {
+			if strings.HasPrefix(strings.TrimSpace(cg.Text()), comment) {
 				return true
 			}
 		}
