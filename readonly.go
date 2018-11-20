@@ -23,7 +23,7 @@ func init() {
 	Analyzer.Flags.StringVar(&comment, "comment", comment, "comment for explicit assignment")
 }
 
-const Doc = `check for possible assignment package variables`
+const Doc = `check for assignment package variables`
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
