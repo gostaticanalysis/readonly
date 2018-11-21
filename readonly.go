@@ -2,8 +2,9 @@ package readonly
 
 import (
 	"go/ast"
-	"strings"
 
+	"github.com/tenntenn/comment"
+	"github.com/tenntenn/comment/passes/commentmap"
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
@@ -13,28 +14,24 @@ var Analyzer = &analysis.Analyzer{
 	Name:     "readonly",
 	Doc:      Doc,
 	Run:      run,
-	Requires: []*analysis.Analyzer{inspect.Analyzer},
+	Requires: []*analysis.Analyzer{inspect.Analyzer, commentmap.Analyzer},
 }
 
 // flags
-var comment = "assign"
+var annotation = "assign"
 
 func init() {
-	Analyzer.Flags.StringVar(&comment, "comment", comment, "comment for explicit assignment")
+	Analyzer.Flags.StringVar(&annotation, "annotation", annotation, "annotation for explicit assignment")
 }
 
 const Doc = `check for assignment package variables`
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
+	cmaps := pass.ResultOf[commentmap.Analyzer].(comment.Maps)
 
 	nodeFilter := []ast.Node{
 		(*ast.AssignStmt)(nil),
-	}
-
-	cms := make([]ast.CommentMap, len(pass.Files))
-	for i, f := range pass.Files {
-		cms[i] = ast.NewCommentMap(pass.Fset, f, f.Comments)
 	}
 
 	inspect.WithStack(nodeFilter, func(n ast.Node, push bool, stack []ast.Node) bool {
@@ -48,7 +45,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return true
 			}
 
-			if hasComment(pass, cms, n) {
+			if cmaps.Annotated(n, annotation) {
 				return true
 			}
 
@@ -63,17 +60,6 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	})
 
 	return nil, nil
-}
-
-func hasComment(pass *analysis.Pass, cms []ast.CommentMap, n ast.Node) bool {
-	for _, cm := range cms {
-		for _, cg := range cm[n] {
-			if strings.HasPrefix(strings.TrimSpace(cg.Text()), comment) {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 func inInit(pass *analysis.Pass, stack []ast.Node) bool {
