@@ -1,4 +1,4 @@
-github.com/tenntenn/comment v0.0.0-20181120235924-1149b16d2257 h1:6TyPR+m7gVrGi2r77a5Q1+4Aar6StlEOWnMhBjm/IWU=
-github.com/tenntenn/comment v0.0.0-20181120235924-1149b16d2257/go.mod h1:UWyncJRsQ1fwkHYqlWDixj1SlU++MnKLBhLvueCtKUg=
+github.com/tenntenn/comment v0.0.0-20181121002213-5ca9d2df41d1 h1:x2YIpGGEzLRvIPuAwbgaME/YyUumLAlY3CN6BvsAf94=
+github.com/tenntenn/comment v0.0.0-20181121002213-5ca9d2df41d1/go.mod h1:EathzjUrWnMPz5E4yfCswi989Ykcx5JZy48KHjwMbx0=
 golang.org/x/tools v0.0.0-20181120234846-b5f2cae84da8 h1:ZgDnWHPLVIHK0eM44AhFy0EFEJjAVJfdmIhq1Hlwkak=
 golang.org/x/tools v0.0.0-20181120234846-b5f2cae84da8/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
