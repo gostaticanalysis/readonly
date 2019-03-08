@@ -3,7 +3,7 @@ package readonly_test
 import (
 	"testing"
 
-	"github.com/tenntenn/readonly"
+	"github.com/gostaticanalysis/readonly"
 	"golang.org/x/tools/go/analysis/analysistest"
 )
 

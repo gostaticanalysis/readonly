@@ -3,18 +3,23 @@ package readonly
 import (
 	"go/ast"
 
-	"github.com/tenntenn/comment"
-	"github.com/tenntenn/comment/passes/commentmap"
+	"github.com/gostaticanalysis/comment"
+	"github.com/gostaticanalysis/comment/passes/commentmap"
 	"golang.org/x/tools/go/analysis"
+	"golang.org/x/tools/go/analysis/passes/buildssa"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 )
 
 var Analyzer = &analysis.Analyzer{
-	Name:     "readonly",
-	Doc:      Doc,
-	Run:      run,
-	Requires: []*analysis.Analyzer{inspect.Analyzer, commentmap.Analyzer},
+	Name: "readonly",
+	Doc:  Doc,
+	Run:  run,
+	Requires: []*analysis.Analyzer{
+		inspect.Analyzer,
+		buildssa.Analyzer,
+		commentmap.Analyzer,
+	},
 }
 
 // flags
@@ -29,6 +34,7 @@ const Doc = `check for assignment package variables`
 func run(pass *analysis.Pass) (interface{}, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 	cmaps := pass.ResultOf[commentmap.Analyzer].(comment.Maps)
+	pkg := pass.ResultOf[buildssa.Analyzer].(buildssa.SSA).Package
 
 	nodeFilter := []ast.Node{
 		(*ast.AssignStmt)(nil),
