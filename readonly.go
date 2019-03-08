@@ -22,19 +22,11 @@ var Analyzer = &analysis.Analyzer{
 	},
 }
 
-// flags
-var annotation = "assign"
-
-func init() {
-	Analyzer.Flags.StringVar(&annotation, "annotation", annotation, "annotation for explicit assignment")
-}
-
 const Doc = `check for assignment package variables`
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 	cmaps := pass.ResultOf[commentmap.Analyzer].(comment.Maps)
-	pkg := pass.ResultOf[buildssa.Analyzer].(buildssa.SSA).Package
 
 	nodeFilter := []ast.Node{
 		(*ast.AssignStmt)(nil),
@@ -51,7 +43,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return true
 			}
 
-			if cmaps.Annotated(n, annotation) {
+			if cmaps.Ignore(n, "readonly") {
 				return true
 			}
 

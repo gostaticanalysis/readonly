@@ -13,6 +13,6 @@ func init() {
 func main() {
 	V1 = 30  // want `V1 shoud not be assigned`
 	V2 = 200 // want `V2 shoud not be assigned`
-	// assign
+	//lint:ignore readonly ignore it
 	V2 = 300 // OK - explicit assign
 }
